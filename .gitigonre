@@ -1,0 +1,6 @@
+home_exrecise.pdf
+app.db
+__pycache__/
+*.py[cod]
+*$py.class
+

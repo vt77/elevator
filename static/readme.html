@@ -1,0 +1,119 @@
+<h2 id="elevator-api">Elevator API</h2>
+<h1 id="overview">Overview</h1>
+<p>This project is a test task for elevator controller. It made as
+flask API application with swagger interface. The project contains two 
+different vertions of application.</p>
+<h2 id="app1">app1</h2>
+<p>app1 is a simple database based application. </p>
+<p>Init database (only once)</p>
+<pre><code>./init_database.<span class="hljs-keyword">py</span>
+</code></pre><p>Start project</p>
+<pre><code>FLASK_APP=app1.py flask <span class="hljs-keyword">run</span><span class="bash"></span>
+</code></pre><h2 id="app2">app2</h2>
+<p>app2 mimics real eleavtor, using statemachine. Any script can be appied to emulate real
+behavour like elevator speed, open doors, light switch and more. Simple script implemented to to emulate simple elevator. Files used:</p>
+<ol>
+<li>elevator.py - emulates elevator device. It has basic device functions - light,door,engine to handle elevator moving.</li>
+<li>controller.py - elevator controller. Controller implements elevator behavior - actions sequence.</li>
+</ol>
+<p>Start project</p>
+<pre><code>FLASK_APP=app2.py flask <span class="hljs-keyword">run</span><span class="bash"></span>
+</code></pre><h2 id="interface">Interface</h2>
+<p>Interface is API json interface, using swagger UI. Number of endpoints implemented:</p>
+<ol>
+<li><p>POST /elevators  - request elevator
+Example : </p>
+<pre><code>curl -X POST <span class="hljs-string">"http://localhost:5000/elevators"</span> -H <span class="hljs-string">"accept: application/json"</span> -H <span class="hljs-string">"Content-Type: application/json"</span> -d <span class="hljs-string">"{<span class="hljs-subst">\"</span>num_persons<span class="hljs-subst">\"</span>:<span class="hljs-subst">\"</span>4<span class="hljs-subst">\"</span>,<span class="hljs-subst">\"</span>cargo_weight<span class="hljs-subst">\"</span>:<span class="hljs-subst">\"</span>100<span class="hljs-subst">\"</span>,<span class="hljs-subst">\"</span>floor<span class="hljs-subst">\"</span>:<span class="hljs-subst">\"</span>8<span class="hljs-subst">\"</span>}"</span>
+</code></pre></li>
+<li><p>GET /elevators - gets elevators list</p>
+<pre><code><span class="hljs-symbol">curl</span> -X <span class="hljs-meta">GET</span> <span class="hljs-string">"http://localhost:5000/elevators"</span> -H <span class="hljs-string">"accept: application/json"</span>
+</code></pre></li>
+</ol>
+<p>Response : </p>
+<pre><code>[
+  {
+    <span class="hljs-attr">"floor"</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">"inuse"</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"fast"</span>,
+    <span class="hljs-attr">"speed"</span>: <span class="hljs-number">2</span>
+  },
+  {
+    <span class="hljs-attr">"floor"</span>: <span class="hljs-number">8</span>,
+    <span class="hljs-attr">"inuse"</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"slow"</span>,
+    <span class="hljs-attr">"speed"</span>: <span class="hljs-number">1</span>
+  },
+  {
+    <span class="hljs-attr">"floor"</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">"inuse"</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"cargo"</span>,
+    <span class="hljs-attr">"speed"</span>: <span class="hljs-number">1</span>
+  }
+]
+</code></pre><ol>
+<li>GET /elevators/{name} - gets elevator full data include logs<pre><code><span class="hljs-symbol">curl</span> -X <span class="hljs-meta">GET</span> <span class="hljs-string">"http://localhost:5000/elevators/fast"</span> -H <span class="hljs-string">"accept: application/json"</span>
+</code></pre></li>
+</ol>
+<p>Response : </p>
+<pre><code>{
+  <span class="hljs-attr">"elevator"</span>: {
+    <span class="hljs-attr">"floor"</span>: <span class="hljs-number">12</span>,
+    <span class="hljs-attr">"inuse"</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"fast"</span>,
+    <span class="hljs-attr">"speed"</span>: <span class="hljs-number">2</span>
+  },
+  <span class="hljs-attr">"features"</span>: {
+    <span class="hljs-attr">"cargo_weight"</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">"floors"</span>: [
+      <span class="hljs-number">0</span>,
+      <span class="hljs-number">10</span>,
+      <span class="hljs-number">11</span>,
+      <span class="hljs-number">12</span>,
+      <span class="hljs-number">13</span>,
+      <span class="hljs-number">14</span>,
+      <span class="hljs-number">17</span>,
+      <span class="hljs-number">16</span>
+    ],
+    <span class="hljs-attr">"num_persons"</span>: <span class="hljs-number">5</span>
+  },
+  <span class="hljs-attr">"log"</span>: [
+    {
+      <span class="hljs-attr">"busy_till"</span>: <span class="hljs-number">1642879889</span>,
+      <span class="hljs-attr">"floor_from"</span>: <span class="hljs-number">0</span>,
+      <span class="hljs-attr">"floor_to"</span>: <span class="hljs-number">12</span>,
+      <span class="hljs-attr">"time"</span>: <span class="hljs-number">1642879871</span>
+    }
+  ],
+  <span class="hljs-attr">"status"</span>: <span class="hljs-string">"ok"</span>
+}
+</code></pre><h2 id="elevator-features-features-py-">Elevator features (features.py)</h2>
+<p>According to task each elevator has number of features : num_persons,cargo_weight, speed and fllors it can visit. When elivator called it should fit requirments. features.py is a class to handle features matching</p>
+<h2 id="elevator-scoring-score-py-">Elevator scoring (score.py)</h2>
+<p>If number of elevators matches request, elevator with best serv will be choosen. score.py handles this selection, based on fastest serve, elevator speed. Very simple scoring system implemented. It may be improved to handle best fit</p>
+<h2 id="serve-history">Serve history</h2>
+<p>Each elevator keeps serve history. History may be used for monitoring.</p>
+<h2 id="logging-and-monitoring">Logging and monitoring</h2>
+<p>This is test project and so Logger sends log to simple stdout. Project running proces may be seen in console, include state machine running progress, elevators states, requests monitor</p>
+<p>Example:</p>
+<pre><code>INFO:root:[API]Call elevator according to filter {'num<span class="hljs-emphasis">_persons': '4', 'cargo_</span>weight': '0', 'floor': '12'}
+INFO:elevator.elevator:[<span class="hljs-string">ELEVATOR</span>][<span class="hljs-symbol">fast</span>] got score 16
+INFO:root:[API]Found elevator match with score 16
+INFO:elevator.elevator:[<span class="hljs-string">ELEVATOR</span>][<span class="hljs-symbol">slow</span>] got score 25
+INFO:root:[API]Found elevator match with score 25
+DEBUG:elevator.elevator:[<span class="hljs-string">ELEVATOR</span>][<span class="hljs-symbol">cargo</span>] not match
+INFO:elevator.elevator:[<span class="hljs-string">ELEVATOR</span>][<span class="hljs-symbol">slow</span>][<span class="hljs-string">GOTO</span>]12 
+DEBUG:root:[EVENT]Got status change slow =&gt; {'time': 1642879863, 'floor<span class="hljs-emphasis">_from': 8, 'floor_</span>to': 12, 'busy_till': 1642879899} 
+INFO:elevator.elevator:[<span class="hljs-string">ELEVATOR</span>][<span class="hljs-symbol">slow</span>][<span class="hljs-string">TRIPTIME</span>]36 
+INFO:elevator.timer:[Timer]Start for period 36 sec (1642879899)
+INFO:werkzeug:127.0.0.1 - - [22/Jan/2022 21:31:03] "POST /elevators HTTP/1.1" 200 -
+INFO:root:[API]Call elevator according to filter {'num<span class="hljs-emphasis">_persons': '4', 'cargo_</span>weight': '0', 'floor': '12'}
+INFO:elevator.elevator:[<span class="hljs-string">ELEVATOR</span>][<span class="hljs-symbol">fast</span>] got score 16
+INFO:root:[API]Found elevator match with score 16
+DEBUG:elevator.elevator:[<span class="hljs-string">ELEVATOR</span>][<span class="hljs-symbol">slow</span>] match but in use
+DEBUG:elevator.elevator:[<span class="hljs-string">ELEVATOR</span>][<span class="hljs-symbol">cargo</span>] not match
+INFO:elevator.elevator:[<span class="hljs-string">ELEVATOR</span>][<span class="hljs-symbol">fast</span>][<span class="hljs-string">GOTO</span>]12 
+DEBUG:root:[EVENT]Got status change fast =&gt; {'time': 1642879871, 'floor<span class="hljs-emphasis">_from': 0, 'floor_</span>to': 12, 'busy_till': 1642879889} 
+INFO:elevator.elevator:[<span class="hljs-string">ELEVATOR</span>][<span class="hljs-symbol">fast</span>][<span class="hljs-string">TRIPTIME</span>]18 
+INFO:elevator.timer:[Timer]Start for period 18 sec (1642879889)
+</code></pre><h2 id="unittesting">Unittesting</h2>
+<p>In this project unittests driven development used. Most functions covered by unittests to minimize bugs. Some unittest still not fully implemented in testproject</p>
